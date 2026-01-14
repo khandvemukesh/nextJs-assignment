@@ -1,4 +1,4 @@
-import { getAllProducts, getCategories } from '@/lib/api';
+import { getAllProducts } from '@/lib/api';
 import { ProductGrid } from '@/components/ProductGrid';
 import { ProductSkeleton } from '@/components/ProductSkeleton';
 import { ErrorState } from '@/components/ErrorState';
@@ -8,12 +8,9 @@ import { Suspense } from 'react';
 
 async function ProductsContent() {
   try {
-    const [products, categories] = await Promise.all([
-      getAllProducts(),
-      getCategories(),
-    ]);
+    const products = await getAllProducts();
 
-    return <ProductGrid products={products} categories={categories} />;
+    return <ProductGrid products={products} categories={[]} />;
   } catch (error) {
     return (
       <ErrorState
