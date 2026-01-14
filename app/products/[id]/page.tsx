@@ -1,5 +1,6 @@
 export const dynamic = "force-dynamic";
-import { getProductById, getAllProducts } from "@/lib/api";
+
+import { getProductById } from "@/lib/api";
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
@@ -7,48 +8,28 @@ import { ArrowLeft, ShoppingBag, Star } from "lucide-react";
 import { FavoriteButton } from "./FavoriteButton";
 
 interface ProductPageProps {
-  params: Promise<{
+  params: {
     id: string;
-  }>;
-};
-
-export async function generateStaticParams() {
- try {
-    const products = await getAllProducts();
-    return products.map(product => ({ id: product.id.toString() }));
-  } catch {
-    return []; 
-  }
+  };
 }
 
-/* ---------- Metadata ---------- */
 export async function generateMetadata({ params }: ProductPageProps) {
-  try {
-    const { id } = await params; 
-    const product = await getProductById(id);
+  const product = await getProductById(params.id);
 
-    return {
-      title: `${product.title} | Product Explorer`,
-      description: product.description,
-    };
-  } catch {
+  if (!product) {
     return {
       title: "Product Not Found",
     };
   }
+  return {
+    title: `${product.title} | Product Explorer`,
+    description: product.description,
+  };
 }
 
-/* ---------- Page ---------- */
+
 export default async function ProductPage({ params }: ProductPageProps) {
-  const { id } = await params; 
-
-  let product;
-
-  try {
-    product = await getProductById(id);
-  } catch {
-    notFound();
-  }
+  const product = await getProductById(params.id);
 
   if (!product) {
     notFound();
@@ -84,11 +65,13 @@ export default async function ProductPage({ params }: ProductPageProps) {
             </div>
 
             <div className="space-y-6">
-              <span className="inline-block bg-amber-600 text-white-800 text-sm px-3 py-1 rounded-full">
+              <span className="inline-block bg-amber-600 text-white text-sm px-3 py-1 rounded-full">
                 {product.category}
               </span>
 
-              <h1 className="text-3xl font-bold text-gray-900">{product.title}</h1>
+              <h1 className="text-3xl font-bold text-gray-900">
+                {product.title}
+              </h1>
 
               <div className="flex items-center gap-2">
                 <Star className="w-5 h-5 fill-amber-600 text-amber-600" />
@@ -117,5 +100,4 @@ export default async function ProductPage({ params }: ProductPageProps) {
       </main>
     </div>
   );
-}
-
+};
