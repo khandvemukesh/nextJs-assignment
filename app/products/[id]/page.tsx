@@ -1,4 +1,3 @@
-export const dynamic = "force-dynamic";
 import { getProductById, getAllProducts } from "@/lib/api";
 import { notFound } from "next/navigation";
 import Image from "next/image";
@@ -10,21 +9,24 @@ interface ProductPageProps {
   params: Promise<{
     id: string;
   }>;
-};
+}
 
 export async function generateStaticParams() {
- try {
+  try {
     const products = await getAllProducts();
-    return products.map(p => ({ id: p.id.toString() }));
-  } catch {
-    return []; 
+
+    return products.map((product) => ({
+      id: product.id.toString(),
+    }));
+  }
+  catch {
+    return [];
   }
 }
 
-/* ---------- Metadata ---------- */
 export async function generateMetadata({ params }: ProductPageProps) {
   try {
-    const { id } = await params; 
+    const { id } = await params;
     const product = await getProductById(id);
     if (!product) {
       return {
@@ -42,12 +44,9 @@ export async function generateMetadata({ params }: ProductPageProps) {
   }
 }
 
-/* ---------- Page ---------- */
 export default async function ProductPage({ params }: ProductPageProps) {
-  const { id } = await params; 
-
+  const { id } = await params;
   let product;
-
   try {
     product = await getProductById(id);
   } catch {
@@ -122,4 +121,3 @@ export default async function ProductPage({ params }: ProductPageProps) {
     </div>
   );
 }
-
