@@ -13,12 +13,20 @@ interface ProductPageProps {
 }
 
 /* ---------- Static Params ---------- */
-export async function generateStaticParams() {
-  const products = await getAllProducts();
+// export async function generateStaticParams() {
+//   const products = await getAllProducts();
 
-  return products.map((product) => ({
-    id: product.id.toString(),
-  }));
+//   return products.map((product) => ({
+//     id: product.id.toString(),
+//   }));
+// }
+export async function generateStaticParams() {
+ try {
+    const products = await getAllProducts();
+    return products.map(p => ({ id: p.id.toString() }));
+  } catch {
+    return []; // NEVER throw during build
+  }
 }
 
 /* ---------- Metadata ---------- */
