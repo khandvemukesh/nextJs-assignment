@@ -10,29 +10,21 @@ interface ProductPageProps {
   params: Promise<{
     id: string;
   }>;
-}
+};
 
-/* ---------- Static Params ---------- */
-// export async function generateStaticParams() {
-//   const products = await getAllProducts();
-
-//   return products.map((product) => ({
-//     id: product.id.toString(),
-//   }));
-// }
 export async function generateStaticParams() {
  try {
     const products = await getAllProducts();
-    return products.map(p => ({ id: p.id.toString() }));
+    return products.map(product => ({ id: product.id.toString() }));
   } catch {
-    return []; // NEVER throw during build
+    return []; 
   }
 }
 
 /* ---------- Metadata ---------- */
 export async function generateMetadata({ params }: ProductPageProps) {
   try {
-    const { id } = await params; // ✅ unwrap params
+    const { id } = await params; 
     const product = await getProductById(id);
 
     return {
@@ -48,7 +40,7 @@ export async function generateMetadata({ params }: ProductPageProps) {
 
 /* ---------- Page ---------- */
 export default async function ProductPage({ params }: ProductPageProps) {
-  const { id } = await params; // ✅ unwrap params
+  const { id } = await params; 
 
   let product;
 
