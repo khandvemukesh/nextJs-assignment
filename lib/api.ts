@@ -5,7 +5,7 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://fakestoreapi.co
 
 export async function getAllProducts(): Promise<Product[]> {
   const response = await fetch(`${API_BASE_URL}/products`, {
-    next: { revalidate: 3600 }
+     cache: 'no-store'
   });
   
   if (!response.ok) {
